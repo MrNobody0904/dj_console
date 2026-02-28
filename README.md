@@ -146,6 +146,8 @@ Audio File (Deck A)          Audio File (Deck B)
 - **CSS Custom Properties** — full theme via CSS variables
 - **Google Fonts** — Orbitron & Share Tech Mono
 
+Read me. AI se banwaya h
+
 ---
 
 I'm First Year student @ IIIT Bhagalpur.I'm a music enthusiast who got tired of paying for software just to tweak an EQ or mix a few tracks. So I built it myself — right in the browser. These tools are for anyone who loves sound and wants professional control without the price tag. Open source, zero install, always free.
