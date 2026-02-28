@@ -148,6 +148,5 @@ Audio File (Deck A)          Audio File (Deck B)
 
 ---
 
-## License
+I'm First Year student @ IIIT Bhagalpur.I'm a music enthusiast who got tired of paying for software just to tweak an EQ or mix a few tracks. So I built it myself — right in the browser. These tools are for anyone who loves sound and wants professional control without the price tag. Open source, zero install, always free.
 
-MIT — free to use, modify, and distribute.
