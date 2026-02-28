@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJMIX PRO — Live DJ Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">DJ MIX PRO</div>
+    <div class="tagline">PROFESSIONAL LIVE DJ CONSOLE</div>
+    <div class="bpm-global" id="globalBpm">♩ MASTER BPM: —</div>
+  </header>
+
+  <!-- Visualizer -->
+  <div class="visualizer-section">
+    <canvas id="mainCanvas"></canvas>
+    <div class="vis-overlay">SPECTRUM ANALYZER</div>
+  </div>
+
+  <!-- Vu meter -->
+  <div class="vu-section" id="vuSection"></div>
+
+  <!-- Two Deck-->
+  <div class="decks">
+    <!-- Deck A -->
+    <div class="deck deck-a" id="deckA">
+      <div class="deck-header">
+        <span class="deck-label">DECK A</span>
+        <span class="deck-status idle" id="statusA">IDLE</span>
+      </div>
+      <div class="turntable-wrap">
+        <div class="turntable" onclick="togglePlay('a')">
+          <div class="vinyl" id="vinylA">
+            <div class="vinyl-label">A</div>
+          </div>
+        </div>
+      </div>
+      <div class="track-info">
+        <div class="track-name" id="nameA">NO TRACK LOADED</div>
+        <div class="track-meta" id="metaA">LOAD AN AUDIO FILE TO BEGIN</div>
+      </div>
+      <div class="waveform-display" id="wfA" onclick="seekDeck('a',event)">
+        <canvas id="wfCanvasA"></canvas>
+        <div class="playhead" id="headA"></div>
+      </div>
+      <div class="bpm-row">
+        <div>
+          <div class="bpm-label">BPM</div>
+          <div class="bpm-display" id="bpmA">—</div>
+        </div>
+        <div class="pitch-wrap">
+          <span class="pitch-label">PITCH</span>
+          <input type="range" class="pitch" id="pitchA" min="0.5" max="2" step="0.01" value="1" oninput="setPitch('a',this.value)">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:var(--muted);min-width:30px;" id="pitchValA">0%</span>
+        </div>
+        <button class="sync-btn" onclick="syncBpm('a')">SYNC</button>
+      </div>
+      <div class="transport">
+        <button class="tbtn" onclick="togglePlay('a')" id="playBtnA">▶ PLAY</button>
+        <button class="tbtn" onclick="cuePoint('a')">CUE</button>
+        <button class="tbtn" onclick="toggleLoop('a')" id="loopBtnA">⟳ LOOP</button>
+        <button class="tbtn" onclick="nudge('a',-0.05)">◄◄</button>
+        <button class="tbtn" onclick="nudge('a',0.05)">►►</button>
+      </div>
+      <div class="eq-row">
+        <div class="eq-col">
+          <div class="knob-container" data-deck="a" data-param="high" data-value="0">
+            <canvas class="knob-canvas" id="knobA_high" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvA_high">0</div>
+          <div class="eq-lbl">HIGH</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="a" data-param="mid" data-value="0">
+            <canvas class="knob-canvas" id="knobA_mid" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvA_mid">0</div>
+          <div class="eq-lbl">MID</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="a" data-param="low" data-value="0">
+            <canvas class="knob-canvas" id="knobA_low" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvA_low">0</div>
+          <div class="eq-lbl">LOW</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="a" data-param="filter" data-value="50">
+            <canvas class="knob-canvas" id="knobA_filter" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvA_filter">50</div>
+          <div class="eq-lbl">FILTER</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="a" data-param="vol" data-value="80">
+            <canvas class="knob-canvas" id="knobA_vol" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvA_vol">80</div>
+          <div class="eq-lbl">VOL</div>
+        </div>
+      </div>
+      <div class="hotcues" id="hcuesA">
+        <div class="hcue" data-deck="a" data-idx="0" onclick="triggerCue('a',0)">CUE 1</div>
+        <div class="hcue" data-deck="a" data-idx="1" onclick="triggerCue('a',1)">CUE 2</div>
+        <div class="hcue" data-deck="a" data-idx="2" onclick="triggerCue('a',2)">CUE 3</div>
+        <div class="hcue" data-deck="a" data-idx="3" onclick="triggerCue('a',3)">CUE 4</div>
+      </div>
+      <button class="load-btn" onclick="document.getElementById('fileA').click()">⊕ LOAD TRACK — CLICK OR DROP</button>
+      <input type="file" id="fileA" accept="audio/*" onchange="loadTrack('a',this)">
+    </div>
+
+    <!-- Deck B -->
+    <div class="deck deck-b" id="deckB">
+      <div class="deck-header">
+        <span class="deck-label">DECK B</span>
+        <span class="deck-status idle" id="statusB">IDLE</span>
+      </div>
+      <div class="turntable-wrap">
+        <div class="turntable" onclick="togglePlay('b')">
+          <div class="vinyl" id="vinylB">
+            <div class="vinyl-label">B</div>
+          </div>
+        </div>
+      </div>
+      <div class="track-info">
+        <div class="track-name" id="nameB">NO TRACK LOADED</div>
+        <div class="track-meta" id="metaB">LOAD AN AUDIO FILE TO BEGIN</div>
+      </div>
+      <div class="waveform-display" id="wfB" onclick="seekDeck('b',event)">
+        <canvas id="wfCanvasB"></canvas>
+        <div class="playhead" id="headB"></div>
+      </div>
+      <div class="bpm-row">
+        <div>
+          <div class="bpm-label">BPM</div>
+          <div class="bpm-display" id="bpmB">—</div>
+        </div>
+        <div class="pitch-wrap">
+          <span class="pitch-label">PITCH</span>
+          <input type="range" class="pitch" id="pitchB" min="0.5" max="2" step="0.01" value="1" oninput="setPitch('b',this.value)">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:var(--muted);min-width:30px;" id="pitchValB">0%</span>
+        </div>
+        <button class="sync-btn" onclick="syncBpm('b')">SYNC</button>
+      </div>
+      <div class="transport">
+        <button class="tbtn" onclick="togglePlay('b')" id="playBtnB">▶ PLAY</button>
+        <button class="tbtn" onclick="cuePoint('b')">CUE</button>
+        <button class="tbtn" onclick="toggleLoop('b')" id="loopBtnB">⟳ LOOP</button>
+        <button class="tbtn" onclick="nudge('b',-0.05)">◄◄</button>
+        <button class="tbtn" onclick="nudge('b',0.05)">►►</button>
+      </div>
+      <div class="eq-row">
+        <div class="eq-col">
+          <div class="knob-container" data-deck="b" data-param="high" data-value="0">
+            <canvas class="knob-canvas" id="knobB_high" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvB_high">0</div>
+          <div class="eq-lbl">HIGH</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="b" data-param="mid" data-value="0">
+            <canvas class="knob-canvas" id="knobB_mid" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvB_mid">0</div>
+          <div class="eq-lbl">MID</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="b" data-param="low" data-value="0">
+            <canvas class="knob-canvas" id="knobB_low" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvB_low">0</div>
+          <div class="eq-lbl">LOW</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="b" data-param="filter" data-value="50">
+            <canvas class="knob-canvas" id="knobB_filter" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvB_filter">50</div>
+          <div class="eq-lbl">FILTER</div>
+        </div>
+        <div class="eq-col">
+          <div class="knob-container" data-deck="b" data-param="vol" data-value="80">
+            <canvas class="knob-canvas" id="knobB_vol" width="44" height="44"></canvas>
+          </div>
+          <div class="knob-val" id="kvB_vol">80</div>
+          <div class="eq-lbl">VOL</div>
+        </div>
+      </div>
+      <div class="hotcues" id="hcuesB">
+        <div class="hcue" data-deck="b" data-idx="0" onclick="triggerCue('b',0)">CUE 1</div>
+        <div class="hcue" data-deck="b" data-idx="1" onclick="triggerCue('b',1)">CUE 2</div>
+        <div class="hcue" data-deck="b" data-idx="2" onclick="triggerCue('b',2)">CUE 3</div>
+        <div class="hcue" data-deck="b" data-idx="3" onclick="triggerCue('b',3)">CUE 4</div>
+      </div>
+      <button class="load-btn" onclick="document.getElementById('fileB').click()">⊕ LOAD TRACK — CLICK OR DROP</button>
+      <input type="file" id="fileB" accept="audio/*" onchange="loadTrack('b',this)">
+    </div>
+  </div>
+
+  <!-- mixer -->
+  <div class="mixer">
+    <div class="mixer-title">// MASTER MIXER //</div>
+    <div class="crossfader-section">
+      <div class="xfader-labels"><span>DECK A</span><span>DECK B</span></div>
+      <input type="range" class="crossfader" id="crossfader" min="0" max="100" value="50" oninput="setCrossfader(this.value)">
+    </div>
+    <div class="master-row">
+      <span class="master-label">MASTER</span>
+      <input type="range" class="master" id="masterVol" min="0" max="1" step="0.01" value="0.85" oninput="setMasterVol(this.value)">
+      <span class="master-val" id="masterVolVal">85%</span>
+    </div>
+    <div class="effects-row">
+      <button class="fx-btn" onclick="toggleFX('echo')">ECHO</button>
+      <button class="fx-btn" onclick="toggleFX('reverb')">REVERB</button>
+      <button class="fx-btn" onclick="toggleFX('flanger')">FLANGER</button>
+      <button class="fx-btn" onclick="toggleFX('bitcrush')">BITCRUSH</button>
+      <button class="fx-btn" onclick="toggleFX('phaser')">PHASER</button>
+    </div>
+    <div class="loop-pads">
+      <button class="pad" onclick="setLoopSize(0.5)">1/2</button>
+      <button class="pad" onclick="setLoopSize(1)">1 BAR</button>
+      <button class="pad" onclick="setLoopSize(2)">2 BAR</button>
+      <button class="pad" onclick="setLoopSize(4)">4 BAR</button>
+      <button class="pad" onclick="setLoopSize(8)">8 BAR</button>
+      <button class="pad" onclick="setLoopSize(16)">16 BAR</button>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
