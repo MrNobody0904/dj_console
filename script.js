@@ -48,13 +48,13 @@ function createDeckChain(id) {
   };
 }
 
-//  Load track
+//  Load track jab disk read hoti h
 async function loadTrack(id, input) {
   ensureAudioContext();
   const file = input.files[0];
   if (!file) return;
   
-  // Stop existing
+  
   if (decks[id] && decks[id].source) {
     try { decks[id].source.stop(); } catch(e) {}
     decks[id].source = null;
@@ -78,14 +78,14 @@ async function loadTrack(id, input) {
     document.getElementById('meta'+id.toUpperCase()).textContent = 
       `${(audioBuffer.sampleRate/1000).toFixed(1)}kHz · ${mins}:${secs} · ${audioBuffer.numberOfChannels}CH`;
     
-    // Estimate BPM (simple energy-based)
+    // Estimate BPM speed of music
     estimateBPM(id, audioBuffer);
     
-    //  static waveform
+    //  static waveform (waveform graph )
     drawStaticWaveform(id, audioBuffer);
     
     setStatus(id, 'idle', 'READY');
-    // Auto-play
+    // basic music componenet 
     startDeck(id);
   } catch(err) {
     console.error('Decode error:', err);
@@ -270,7 +270,7 @@ function setMasterVol(val) {
   document.getElementById('masterVolVal').textContent = Math.round(val*100)+'%';
 }
 
-//  EFFECTS 
+//  effects h 
 let fxNodes = {};
 function toggleFX(name) {
   ensureAudioContext();
@@ -300,7 +300,7 @@ function toggleFX(name) {
   }
 }
 
-//  BPM ESTIMATION 
+
 function estimateBPM(id, buffer) {
   const data = buffer.getChannelData(0);
   const sr = buffer.sampleRate;
@@ -332,7 +332,7 @@ function updateGlobalBpm() {
   if (bpms.length) document.getElementById('globalBpm').textContent = `♩ MASTER BPM: ${(bpms.reduce((a,b)=>a+b,0)/bpms.length).toFixed(1)}`;
 }
 
-//  WAVEFORM DRAWING 
+//  Wave form diagram banta h 
 function drawStaticWaveform(id, buffer) {
   const canvas = document.getElementById('wfCanvas'+id.toUpperCase());
   const container = document.getElementById('wf'+id.toUpperCase());
@@ -362,7 +362,7 @@ function drawStaticWaveform(id, buffer) {
   decks[id].waveformData = true;
 }
 
-//  MAIN VISUAL
+//  visuals
 let mainAnalyserA, mainAnalyserB;
 function startMainVisualizer() {
   const canvas = document.getElementById('mainCanvas');
@@ -375,7 +375,7 @@ function startMainVisualizer() {
     ctx2.fillStyle = 'rgba(8,8,16,0.3)';
     ctx2.fillRect(0,0,W,H);
 
-    // Draw both decks
+    //dono decks
     [['a','#ff2d78'],[' b','#00d4ff']].forEach(([rawId, color], di) => {
       const id = rawId.trim();
       const d = decks[id];
@@ -401,7 +401,7 @@ function startMainVisualizer() {
       }
     });
 
-    // Center divider
+    
     ctx2.strokeStyle = '#222235';
     ctx2.lineWidth = 1;
     ctx2.beginPath();
@@ -428,7 +428,7 @@ function startMainVisualizer() {
   draw();
 }
 
-//  VU METERS 
+
 function initVU() {
   const section = document.getElementById('vuSection');
   section.innerHTML = '';
@@ -494,7 +494,7 @@ function buildKnobs() {
     });
     document.addEventListener('mouseup', () => dragging = false);
 
-    // Touch support
+  
     container.addEventListener('touchstart', e => {
       dragging = true; startY = e.touches[0].clientY; startVal = val; e.preventDefault();
     }, {passive:false});
@@ -571,5 +571,6 @@ document.addEventListener('keydown', e => {
   if (k === 'k') toggleLoop('b');
 });
 
-// Info
+
+
 console.log('🎧 DJ MIX PRO\nKeyboard: Q=Play A, P=Play B, W=Cue A, O=Cue B\nZ/X=Nudge A, N/M=Nudge B, S=Sync A, L=Loop A, K=Loop B');
